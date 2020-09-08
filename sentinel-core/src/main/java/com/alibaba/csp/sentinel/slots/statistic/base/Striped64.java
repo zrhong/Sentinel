@@ -9,6 +9,8 @@ package com.alibaba.csp.sentinel.slots.statistic.base;
  * From http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/src/jsr166e/
  */
 
+import sun.misc.Unsafe;
+
 import java.util.Random;
 
 /**
@@ -102,7 +104,7 @@ abstract class Striped64 extends Number {
         }
 
         // Unsafe mechanics
-        private static final sun.misc.Unsafe UNSAFE;
+        private static final Unsafe UNSAFE;
         private static final long valueOffset;
 
         static {
@@ -299,7 +301,7 @@ abstract class Striped64 extends Number {
     }
 
     // Unsafe mechanics
-    private static final sun.misc.Unsafe UNSAFE;
+    private static final Unsafe UNSAFE;
     private static final long baseOffset;
     private static final long busyOffset;
 
@@ -317,26 +319,25 @@ abstract class Striped64 extends Number {
     }
 
     /**
-     * Returns a sun.misc.Unsafe.  Suitable for use in a 3rd party package.
+     * Returns a jdk.internal.misc.Unsafe.  Suitable for use in a 3rd party package.
      * Replace with a simple call to Unsafe.getUnsafe when integrating
      * into a jdk.
      *
-     * @return a sun.misc.Unsafe
+     * @return a jdk.internal.misc.Unsafe
      */
-    private static sun.misc.Unsafe getUnsafe() {
+    private static Unsafe getUnsafe() {
         try {
-            return sun.misc.Unsafe.getUnsafe();
+            return Unsafe.getUnsafe();
         } catch (SecurityException se) {
             try {
                 return java.security.AccessController.doPrivileged
                     (new java.security
-                        .PrivilegedExceptionAction<sun.misc.Unsafe>() {
+                        .PrivilegedExceptionAction<Unsafe>() {
                         @Override
-                        public sun.misc.Unsafe run() throws Exception {
-                            java.lang.reflect.Field f = sun.misc
-                                .Unsafe.class.getDeclaredField("theUnsafe");
+                        public Unsafe run() throws Exception {
+                            java.lang.reflect.Field f = Unsafe.class.getDeclaredField("theUnsafe");
                             f.setAccessible(true);
-                            return (sun.misc.Unsafe)f.get(null);
+                            return (Unsafe)f.get(null);
                         }
                     });
             } catch (java.security.PrivilegedActionException e) {
